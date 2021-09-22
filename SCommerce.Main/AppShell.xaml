@@ -1,0 +1,33 @@
+﻿<Page
+    x:Class="SCommerce.Main.AppShell"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SCommerce.Main"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <CommandBar IsOpen="True" IsSticky="True" VerticalContentAlignment="Stretch">
+            <CommandBar.Content>
+                <TextBlock Text="SCommerce"
+                           Foreground="DarkBlue"
+                           FontSize="20"
+                           VerticalAlignment="Center"
+                           FontWeight="Black"
+                           Margin="20,0"
+                           />
+
+            </CommandBar.Content>
+            <AppBarButton Label="Cart" Icon="AllApps" />
+        </CommandBar>
+
+        <ContentPresenter x:Name="FrameContainer" Grid.Row="1" />
+    </Grid>
+</Page>
