@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:converters="using:SCommerce.Main.Converters"
-    xmlns:prism="using:Prism.Windows.Mvvm"
+    xmlns:prism="using:Prism.Windows.Mvvm" xmlns:controls="using:SCommerce.Main.Controls"
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -18,7 +18,7 @@
             <ItemsStackPanel  Orientation="Horizontal" />
         </ItemsPanelTemplate>
 
-        <DataTemplate x:Key="ImagesItemTemplate" x:DataType="x:String">
+        <DataTemplate x:Key="ImagesItemTemplate" x:DataType="BitmapImage">
             <Border CornerRadius="15" Height="100" Width="100">
                 <Image 
                     Stretch="UniformToFill" 
@@ -26,8 +26,80 @@
             </Border>
         </DataTemplate>
 
+        <Style x:Key="Title" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="50"/>
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{ThemeResource Color1}" />
+        </Style>
+
+        <Style x:Key="SubTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style x:Key="Text" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Foreground" Value="{ThemeResource Color2}" />
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{ThemeResource Color3}"/>
+            <Setter Property="BackgroundSizing" Value="OuterBorderEdge"/>
+            <Setter Property="Foreground" Value="{ThemeResource Color4}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}"/>
+            <Setter Property="FocusVisualMargin" Value="-3"/>
+            <Setter Property="CornerRadius" Value="15" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" BackgroundSizing="{TemplateBinding BackgroundSizing}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" CornerRadius="{TemplateBinding CornerRadius}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter"/>
+                                        </Storyboard>
+                                        <VisualState.Setters>
+                                            <Setter Target="ContentPresenter.Opacity" Value=".8" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <PointerDownThemeAnimation Storyboard.TargetName="ContentPresenter"/>
+                                        </Storyboard>
+                                        <VisualState.Setters>
+                                            <Setter Target="ContentPresenter.Opacity" Value=".5" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <VisualState.Setters>
+                                            <Setter Target="ContentPresenter.Opacity" Value=".3" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </ContentPresenter>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
     </Page.Resources>
-    
+
     <ScrollViewer>
         <Grid Padding="20">
             <Grid.RowDefinitions>
@@ -41,9 +113,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Text="{x:Bind ViewModel.Title}" 
-                   FontSize="50" 
-                   FontWeight="SemiBold" 
-                   Foreground="#333" 
+                  Style="{StaticResource Title}"                  
                    Margin="20,20,20,40"
                    Grid.ColumnSpan="2"/>
 
@@ -58,18 +128,23 @@
                 </Border>
 
 
-                <ListView ItemsSource="{x:Bind ViewModel.Images}"
+                <ListView ItemsSource="{x:Bind ViewModel.Images, Mode=OneWay}"
                           ItemsPanel="{StaticResource ImagesPanelTemplate}"
                           ItemTemplate="{StaticResource ImagesItemTemplate}"
                           SelectedItem="{x:Bind ViewModel.SelectedImage, Mode=TwoWay}"
                           />
-                
-                <TextBlock Margin="0,20" FontSize="20" FontWeight="SemiBold">
+
+
+                <controls:Rating Value="{x:Bind ViewModel.Rating, Mode=OneWay}" />
+
+                <TextBlock Margin="0,20" Style="{StaticResource SubTitle}">
                     <Run Text="R$" />
                     <Run Text="{x:Bind ViewModel.Price, Converter={StaticResource CurrencyConverter}}" />
                 </TextBlock>
 
-                <Button Command="{x:Bind ViewModel.AddToCart}" FontSize="28" Content="Add to Cart" />
+                <Button Style="{StaticResource PrimaryButton}" x:Uid="ProductDetails_AddToCart_Button" 
+                        Click="{x:Bind ViewModel.AddToCartMethod}"                       
+                        Content="Add to Cart" />
 
             </StackPanel>
 
@@ -78,8 +153,7 @@
             <TextBlock Grid.Row="1" 
                    Grid.Column="1"
                    TextWrapping="Wrap"
-                   FontSize="20"
-                   Foreground="#666666"
+                        Style="{StaticResource Text}"
                    Margin="20,0"
                     Text="{x:Bind ViewModel.Description}"/>
 

@@ -1,7 +1,14 @@
-﻿namespace SCommerce.Main.Services.Base
+﻿using SCommerce.Main.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace SCommerce.Main.Services.Base
 {
     public interface ICartService
     {
-        void Add(int productId, int quantity);
+        Task AddAsync(int productId, int quantity);
+        List<CartEntry> ListItemsForCheckout();
+        void Subtract(int productId, int quantity);
+        void Remove(int productId);
     }
 }

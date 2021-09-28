@@ -1,5 +1,10 @@
-﻿using Prism.Unity.Windows;
+﻿using Microsoft.Practices.Unity;
+using Prism.Unity.Windows;
+using Prism.Windows.AppModel;
 using SCommerce.Main.Common;
+using SCommerce.Main.Entities;
+using SCommerce.Main.Repositories;
+using SCommerce.Main.Repositories.Base;
 using SCommerce.Main.Services;
 using SCommerce.Main.Services.Base;
 using SCommerce.Main.Views;
@@ -11,6 +16,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -28,11 +34,18 @@ namespace SCommerce.Main
     /// </summary>
     public sealed partial class App : PrismUnityApplication
     {
-        protected override Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
+        protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
-            NavigationService.Navigate(PageTokens.ProductDetailsPage, null);
 
-            return Task.CompletedTask;
+           
+                using (var db = new SCommerceDb())
+                {
+                    await db.Database.EnsureCreatedAsync();
+                }
+                NavigationService.Navigate(PageTokens.ProductsPage, null);
+            
+
+            
         }
 
         protected override UIElement CreateShell(Frame rootFrame)
@@ -47,8 +60,11 @@ namespace SCommerce.Main
         {
             base.ConfigureContainer();
 
+            Container.RegisterInstance(typeof(IResourceLoader), new ResourceLoaderAdapter(new ResourceLoader()), new ContainerControlledLifetimeManager());
             RegisterTypeIfMissing(typeof(IProductService), typeof(ProductService), false);
             RegisterTypeIfMissing(typeof(ICartService), typeof(CartService), true);
+            RegisterTypeIfMissing(typeof(IProductRepository), typeof(ProductRepository), false);
         }
     }
 }
+

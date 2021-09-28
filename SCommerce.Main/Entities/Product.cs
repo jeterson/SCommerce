@@ -18,7 +18,7 @@ namespace SCommerce.Main.Entities
 
         public int Rating { get; set; }
 
-        public List<string> Images { get; set; } = new List<string>();
+        public List<ProductImage> Images { get; set; } = new List<ProductImage>();
 
     }
 }
